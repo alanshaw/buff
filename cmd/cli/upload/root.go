@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/alanshaw/buff/pkg/fx/cli"
-	"github.com/alanshaw/buff/pkg/store/delegation"
+	dstore "github.com/alanshaw/buff/pkg/store/delegation"
 	"github.com/alanshaw/libracha/capabilities/blob"
 	ucanlib "github.com/alanshaw/libracha/ucan"
 	"github.com/alanshaw/ucantone/client"
@@ -17,6 +17,9 @@ import (
 	"github.com/alanshaw/ucantone/ipld/datamodel"
 	"github.com/alanshaw/ucantone/principal"
 	"github.com/alanshaw/ucantone/result"
+	"github.com/alanshaw/ucantone/ucan"
+	"github.com/alanshaw/ucantone/ucan/delegation"
+	"github.com/alanshaw/ucantone/ucan/delegation/policy"
 	"github.com/alanshaw/ucantone/ucan/invocation"
 	logging "github.com/ipfs/go-log/v2"
 	"github.com/multiformats/go-multihash"
@@ -33,7 +36,7 @@ var Cmd = &cobra.Command{
 	RunE:    cli.FXCommand(doUpload),
 }
 
-func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegationStore delegation.Store) error {
+func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegationStore dstore.Store) error {
 	space, err := did.Parse(args[0])
 	cobra.CheckErr(err)
 
@@ -79,6 +82,41 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 	)
 	cobra.CheckErr(err)
 
+	// create required invocation delegations
+	// TODO: get proof chain for these as well and add to invocation - for now it
+	// is fine as we know we have top authority over the space so this delegation
+	// will be included already.
+	delegations := []ucan.Delegation{}
+	dlg, err := delegation.Delegate(
+		id,
+		serviceID,
+		space,
+		blob.AllocateCommand,
+		delegation.WithPolicyBuilder(
+			policy.And(
+				policy.Equal(".blob.digest", []byte(digest)),
+				policy.Equal(".blob.size", len(data)),
+			),
+		),
+	)
+	cobra.CheckErr(err)
+	delegations = append(delegations, dlg)
+
+	dlg, err = delegation.Delegate(
+		id,
+		serviceID,
+		space,
+		blob.AcceptCommand,
+		delegation.WithPolicyBuilder(
+			policy.And(
+				policy.Equal(".blob.digest", []byte(digest)),
+				policy.Equal(".blob.size", len(data)),
+			),
+		),
+	)
+	cobra.CheckErr(err)
+	delegations = append(delegations, dlg)
+
 	client, err := client.NewHTTP(serviceURL)
 	cobra.CheckErr(err)
 
@@ -86,7 +124,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 		cmd.Context(),
 		inv,
 		execution.WithProofs(proofs...),
-		// execution.WithDelegations(),
+		execution.WithDelegations(delegations...),
 	)
 
 	response, err := client.Execute(request)
