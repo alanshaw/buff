@@ -1,11 +1,7 @@
 github.com/alanshaw/dag-json-gen v0.0.3 h1:SymTJ80G0Qw41ukJ8ocevbTPr8Y3CWJFdhB4huro47E=
 github.com/alanshaw/dag-json-gen v0.0.3/go.mod h1:rXxWw0SItP9QjxpRMpkju66h0KumF7TPCtvHdOKS5lY=
-github.com/alanshaw/libracha v0.0.0-20251218165400-91e0fc26a243 h1:4U/FJKVgp48UroyedH7IsAJsRFL4gYSyFgP9aZQC8Fg=
-github.com/alanshaw/libracha v0.0.0-20251218165400-91e0fc26a243/go.mod h1:sLkbaUOPPIG07WlEMQ6IR8fvTu1J7zN5WIrFBC1RPQk=
-github.com/alanshaw/libracha v0.0.0-20251218232348-95bf06cf6272 h1:msEv2jOtcIgdralV7Nry//0R2buFIA2i04KAItbNs84=
-github.com/alanshaw/libracha v0.0.0-20251218232348-95bf06cf6272/go.mod h1:sLkbaUOPPIG07WlEMQ6IR8fvTu1J7zN5WIrFBC1RPQk=
-github.com/alanshaw/ucantone v0.0.0-20251216172216-fb5018e58e72 h1:YRZOu3urmN4MspI/drfhH0TDwjTCZ47rtafYh3R6lng=
-github.com/alanshaw/ucantone v0.0.0-20251216172216-fb5018e58e72/go.mod h1:OkhxH4U/b9qvbp/07s1Ra5g37p0IsxVdkLOzkTrERoM=
+github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a h1:d+JxH8hvIYx5ThT5BkoqspNncVHNISxlFKqxAmzc1us=
+github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a/go.mod h1:sLkbaUOPPIG07WlEMQ6IR8fvTu1J7zN5WIrFBC1RPQk=
 github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507 h1:gsmj7fsWWGQhrRkuuSYHs/9kVwsbYpejU+/OVTqHj8U=
 github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507/go.mod h1:OkhxH4U/b9qvbp/07s1Ra5g37p0IsxVdkLOzkTrERoM=
 github.com/algorand/go-algorand-sdk v1.24.0 h1:mi8vqjXMC5nU87snq4vxHi+NgPR0thtZHRLA16FKZMM=

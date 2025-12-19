@@ -14,6 +14,7 @@ import (
 	assert_caps "github.com/alanshaw/libracha/capabilities/assert"
 	"github.com/alanshaw/libracha/capabilities/blob"
 	http_caps "github.com/alanshaw/libracha/capabilities/http"
+	ucan_caps "github.com/alanshaw/libracha/capabilities/ucan"
 	"github.com/alanshaw/libracha/digestutil"
 	ucanlib "github.com/alanshaw/libracha/ucan"
 	"github.com/alanshaw/ucantone/client"
@@ -26,7 +27,6 @@ import (
 	"github.com/alanshaw/ucantone/result"
 	"github.com/alanshaw/ucantone/ucan"
 	"github.com/alanshaw/ucantone/ucan/delegation"
-	"github.com/alanshaw/ucantone/ucan/delegation/policy"
 	"github.com/alanshaw/ucantone/ucan/invocation"
 	"github.com/alanshaw/ucantone/ucan/receipt"
 	"github.com/ipfs/go-cid"
@@ -95,12 +95,13 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 		serviceConfig.Upload.ID,
 		space,
 		blob.AllocateCommand,
-		delegation.WithPolicyBuilder(
-			policy.And(
-				policy.Equal(".blob.digest", []byte(digest)),
-				policy.Equal(".blob.size", len(data)),
-			),
-		),
+		// FIXME:
+		// delegation.WithPolicyBuilder(
+		// 	policy.And(
+		// 		policy.Equal(".blob.digest", []byte(digest)),
+		// 		policy.Equal(".blob.size", len(data)),
+		// 	),
+		// ),
 	)
 	cobra.CheckErr(err)
 	delegations = append(delegations, dlg)
@@ -110,12 +111,13 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 		serviceConfig.Upload.ID,
 		space,
 		blob.AcceptCommand,
-		delegation.WithPolicyBuilder(
-			policy.And(
-				policy.Equal(".blob.digest", []byte(digest)),
-				policy.Equal(".blob.size", len(data)),
-			),
-		),
+		// FIXME:
+		// delegation.WithPolicyBuilder(
+		// 	policy.And(
+		// 		policy.Equal(".blob.digest", []byte(digest)),
+		// 		policy.Equal(".blob.size", len(data)),
+		// 	),
+		// ),
 	)
 	cobra.CheckErr(err)
 	delegations = append(delegations, dlg)
@@ -212,7 +214,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 			return fmt.Errorf("upload failed with status %d: %s", putRes.StatusCode, string(body))
 		}
 
-		cmd.Printf("🧾 issuing receipt for completed %q task", http_caps.PutCommand)
+		cmd.Printf("🧾 issuing receipt for completed %q task\n", http_caps.PutCommand)
 		httpPutRcpt, err = receipt.Issue(
 			blobProvider,
 			httpPutInv.Task().Link(),
@@ -220,7 +222,21 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 		)
 		cobra.CheckErr(err)
 
-		request := execution.NewRequest(cmd.Context(), httpPutRcpt)
+		concludeInv, err := ucan_caps.Conclude.Invoke(
+			id,
+			id,
+			&ucan_caps.ConcludeArguments{
+				Receipt: httpPutRcpt.Link(),
+			},
+			invocation.WithAudience(serviceConfig.Upload.ID),
+		)
+		cobra.CheckErr(err)
+
+		request := execution.NewRequest(
+			cmd.Context(),
+			concludeInv,
+			execution.WithReceipts(httpPutRcpt),
+		)
 		_, err = client.Execute(request)
 		cobra.CheckErr(err)
 	}

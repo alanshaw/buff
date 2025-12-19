@@ -5,10 +5,11 @@ go 1.25.3
 // replace github.com/alanshaw/libracha => ../libracha
 
 require (
-	github.com/alanshaw/libracha v0.0.0-20251218232348-95bf06cf6272
+	github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a
 	github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507
 	github.com/algorand/go-algorand-sdk v1.24.0
 	github.com/go-playground/validator/v10 v10.29.0
+	github.com/ipfs/go-cid v0.6.0
 	github.com/ipfs/go-datastore v0.9.0
 	github.com/ipfs/go-ds-leveldb v0.5.2
 	github.com/ipfs/go-log/v2 v2.9.0
@@ -32,7 +33,6 @@ require (
 	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/ipfs/go-cid v0.6.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
