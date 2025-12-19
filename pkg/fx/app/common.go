@@ -15,6 +15,7 @@ func CommonModules(cfg app.AppConfig) fx.Option {
 		fx.Supply(cfg),
 		fx.Supply(cfg.Identity),
 		fx.Supply(cfg.Storage),
+		fx.Supply(cfg.Services),
 
 		identity.Module,
 		store.Module,

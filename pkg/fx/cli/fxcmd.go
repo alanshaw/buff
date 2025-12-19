@@ -18,6 +18,12 @@ var log = logging.Logger("pkg/cli")
 
 func FXCommand(doFunc any) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
+		// Apply network presets before loading config, but only for flags that
+		// weren't explicitly set
+		if err := config.LoadPresets(); err != nil {
+			return fmt.Errorf("loading presets: %w", err)
+		}
+
 		userCfg, err := config.Load[config.AppConfig]()
 		if err != nil {
 			return fmt.Errorf("loading config: %w", err)

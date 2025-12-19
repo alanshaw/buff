@@ -4,4 +4,5 @@ package app
 type AppConfig struct {
 	Identity IdentityConfig
 	Storage  StorageConfig
+	Services ExternalServicesConfig
 }

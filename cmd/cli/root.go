@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -15,6 +16,7 @@ import (
 	"github.com/alanshaw/buff/cmd/cli/space"
 	"github.com/alanshaw/buff/cmd/cli/upload"
 	"github.com/alanshaw/buff/pkg/build"
+	"github.com/alanshaw/buff/pkg/presets"
 )
 
 func ExecuteContext(ctx context.Context) {
@@ -49,6 +51,46 @@ func init() {
 	rootCmd.PersistentFlags().String("key-file", "", "Path to a PEM file containing ed25519 private key")
 	cobra.CheckErr(rootCmd.MarkPersistentFlagFilename("key-file", "pem"))
 	cobra.CheckErr(viper.BindPFlag("identity.key_file", rootCmd.PersistentFlags().Lookup("key-file")))
+
+	rootCmd.Flags().String(
+		"network",
+		"dev",
+		fmt.Sprintf("Network the node will operate on. This will set default values for service URLs and DIDs and contract addresses. Available values are: %q", presets.AvailableNetworks),
+	)
+	cobra.CheckErr(rootCmd.Flags().MarkHidden("network"))
+	cobra.CheckErr(viper.BindPFlag("network", rootCmd.Flags().Lookup("network")))
+
+	rootCmd.Flags().String(
+		"indexing-service-id",
+		"",
+		"[Advanced] DID of the indexing service. Only change if you know what you're doing. Use --network flag to set proper defaults.",
+	)
+	cobra.CheckErr(rootCmd.Flags().MarkHidden("indexing-service-id"))
+	cobra.CheckErr(viper.BindPFlag("services.indexer.id", rootCmd.Flags().Lookup("indexing-service-id")))
+
+	rootCmd.Flags().String(
+		"indexing-service-url",
+		"",
+		"[Advanced] URL of the indexing service. Only change if you know what you're doing. Use --network flag to set proper defaults.",
+	)
+	cobra.CheckErr(rootCmd.Flags().MarkHidden("indexing-service-url"))
+	cobra.CheckErr(viper.BindPFlag("services.indexer.url", rootCmd.Flags().Lookup("indexing-service-url")))
+
+	rootCmd.Flags().String(
+		"upload-service-id",
+		"",
+		"[Advanced] DID of the upload service. Only change if you know what you're doing. Use --network flag to set proper defaults.",
+	)
+	cobra.CheckErr(rootCmd.Flags().MarkHidden("upload-service-id"))
+	cobra.CheckErr(viper.BindPFlag("services.upload.id", rootCmd.Flags().Lookup("upload-service-id")))
+
+	rootCmd.Flags().String(
+		"upload-service-url",
+		"",
+		"[Advanced] URL of the upload service. Only change if you know what you're doing. Use --network flag to set proper defaults.",
+	)
+	cobra.CheckErr(rootCmd.Flags().MarkHidden("upload-service-url"))
+	cobra.CheckErr(viper.BindPFlag("services.upload.url", rootCmd.Flags().Lookup("upload-service-url")))
 
 	// register all commands and their subcommands
 	rootCmd.AddCommand(space.Cmd)

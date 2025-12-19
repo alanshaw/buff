@@ -3,9 +3,9 @@ package upload
 import (
 	"fmt"
 	"io"
-	"net/url"
 	"os"
 
+	"github.com/alanshaw/buff/pkg/config/app"
 	"github.com/alanshaw/buff/pkg/fx/cli"
 	dstore "github.com/alanshaw/buff/pkg/store/delegation"
 	"github.com/alanshaw/libracha/capabilities/blob"
@@ -36,7 +36,7 @@ var Cmd = &cobra.Command{
 	RunE:    cli.FXCommand(doUpload),
 }
 
-func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegationStore dstore.Store) error {
+func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceConfig app.ExternalServicesConfig, delegationStore dstore.Store) error {
 	space, err := did.Parse(args[0])
 	cobra.CheckErr(err)
 
@@ -52,12 +52,6 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 	}
 
 	digest, err := multihash.Sum(data, multihash.SHA2_256, -1)
-	cobra.CheckErr(err)
-
-	serviceID, err := did.Parse("did:key:z6MkiZfWmWbXpBj2bxF4w8ifBRi8PRSa83qUFTWq7rb73Hse")
-	cobra.CheckErr(err)
-
-	serviceURL, err := url.Parse("http://localhost:3000")
 	cobra.CheckErr(err)
 
 	matcher := ucanlib.NewDelegationMatcher(delegationStore)
@@ -77,7 +71,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 				Size:   uint64(len(data)),
 			},
 		},
-		invocation.WithAudience(serviceID),
+		invocation.WithAudience(serviceConfig.Upload.ID),
 		invocation.WithProofs(proofLinks...),
 	)
 	cobra.CheckErr(err)
@@ -89,7 +83,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 	delegations := []ucan.Delegation{}
 	dlg, err := delegation.Delegate(
 		id,
-		serviceID,
+		serviceConfig.Upload.ID,
 		space,
 		blob.AllocateCommand,
 		delegation.WithPolicyBuilder(
@@ -104,7 +98,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 
 	dlg, err = delegation.Delegate(
 		id,
-		serviceID,
+		serviceConfig.Upload.ID,
 		space,
 		blob.AcceptCommand,
 		delegation.WithPolicyBuilder(
@@ -117,7 +111,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, delegation
 	cobra.CheckErr(err)
 	delegations = append(delegations, dlg)
 
-	client, err := client.NewHTTP(serviceURL)
+	client, err := client.NewHTTP(serviceConfig.Upload.URL)
 	cobra.CheckErr(err)
 
 	request := execution.NewRequest(

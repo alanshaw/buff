@@ -9,6 +9,7 @@ import (
 type AppConfig struct {
 	Identity IdentityConfig `mapstructure:"identity" toml:"identity"`
 	Repo     RepoConfig     `mapstructure:"repo" toml:"repo"`
+	Services ServicesConfig `mapstructure:"services" toml:"services"`
 }
 
 func (f AppConfig) Validate() error {
@@ -32,6 +33,11 @@ func (f AppConfig) ToAppConfig() (app.AppConfig, error) {
 	out.Storage, err = f.Repo.ToAppConfig()
 	if err != nil {
 		return app.AppConfig{}, fmt.Errorf("converting repo to app config: %w", err)
+	}
+
+	out.Services, err = f.Services.ToAppConfig()
+	if err != nil {
+		return app.AppConfig{}, fmt.Errorf("converting services to app config: %w", err)
 	}
 
 	return out, nil
