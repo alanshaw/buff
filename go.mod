@@ -6,7 +6,7 @@ go 1.25.3
 
 require (
 	github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a
-	github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507
+	github.com/alanshaw/ucantone v0.0.0-20260107142715-f3e55efdef36
 	github.com/algorand/go-algorand-sdk v1.24.0
 	github.com/go-playground/validator/v10 v10.29.0
 	github.com/ipfs/go-cid v0.6.0
@@ -22,7 +22,7 @@ require (
 )
 
 require (
-	github.com/alanshaw/dag-json-gen v0.0.3 // indirect
+	github.com/alanshaw/dag-json-gen v0.0.4 // indirect
 	github.com/algorand/go-codec/codec v1.1.8 // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.11 // indirect

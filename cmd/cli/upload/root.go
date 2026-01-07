@@ -27,6 +27,7 @@ import (
 	"github.com/alanshaw/ucantone/result"
 	"github.com/alanshaw/ucantone/ucan"
 	"github.com/alanshaw/ucantone/ucan/delegation"
+	"github.com/alanshaw/ucantone/ucan/delegation/policy"
 	"github.com/alanshaw/ucantone/ucan/invocation"
 	"github.com/alanshaw/ucantone/ucan/receipt"
 	"github.com/ipfs/go-cid"
@@ -89,38 +90,19 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 	// TODO: get proof chain for these as well and add to invocation - for now it
 	// is fine as we know we have top authority over the space so this delegation
 	// will be included already.
-	delegations := []ucan.Delegation{}
-	dlg, err := delegation.Delegate(
+	allocDlg, err := delegation.Delegate(
 		id,
 		serviceConfig.Upload.ID,
 		space,
 		blob.AllocateCommand,
-		// FIXME:
-		// delegation.WithPolicyBuilder(
-		// 	policy.And(
-		// 		policy.Equal(".blob.digest", []byte(digest)),
-		// 		policy.Equal(".blob.size", len(data)),
-		// 	),
-		// ),
+		delegation.WithPolicyBuilder(
+			policy.And(
+				policy.Equal(".blob.digest", []byte(digest)),
+				policy.Equal(".blob.size", len(data)),
+			),
+		),
 	)
 	cobra.CheckErr(err)
-	delegations = append(delegations, dlg)
-
-	dlg, err = delegation.Delegate(
-		id,
-		serviceConfig.Upload.ID,
-		space,
-		blob.AcceptCommand,
-		// FIXME:
-		// delegation.WithPolicyBuilder(
-		// 	policy.And(
-		// 		policy.Equal(".blob.digest", []byte(digest)),
-		// 		policy.Equal(".blob.size", len(data)),
-		// 	),
-		// ),
-	)
-	cobra.CheckErr(err)
-	delegations = append(delegations, dlg)
 
 	client, err := client.NewHTTP(serviceConfig.Upload.URL)
 	cobra.CheckErr(err)
@@ -129,7 +111,7 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 		cmd.Context(),
 		inv,
 		execution.WithProofs(proofs...),
-		execution.WithDelegations(delegations...),
+		execution.WithDelegations(allocDlg),
 	)
 
 	response, err := client.Execute(request)
@@ -232,9 +214,24 @@ func doUpload(cmd *cobra.Command, args []string, id principal.Signer, serviceCon
 		)
 		cobra.CheckErr(err)
 
+		accDlg, err := delegation.Delegate(
+			id,
+			serviceConfig.Upload.ID,
+			space,
+			blob.AcceptCommand,
+			delegation.WithPolicyBuilder(
+				policy.And(
+					policy.Equal(".blob.digest", []byte(digest)),
+					policy.Equal(".blob.size", len(data)),
+				),
+			),
+		)
+		cobra.CheckErr(err)
+
 		request := execution.NewRequest(
 			cmd.Context(),
 			concludeInv,
+			execution.WithDelegations(accDlg),
 			execution.WithReceipts(httpPutRcpt),
 		)
 		_, err = client.Execute(request)

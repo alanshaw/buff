@@ -1,9 +1,9 @@
-github.com/alanshaw/dag-json-gen v0.0.3 h1:SymTJ80G0Qw41ukJ8ocevbTPr8Y3CWJFdhB4huro47E=
-github.com/alanshaw/dag-json-gen v0.0.3/go.mod h1:rXxWw0SItP9QjxpRMpkju66h0KumF7TPCtvHdOKS5lY=
+github.com/alanshaw/dag-json-gen v0.0.4 h1:qoryz04TVH6zu16NRFnzgolzQGaPfTvoIawv/F5rDoY=
+github.com/alanshaw/dag-json-gen v0.0.4/go.mod h1:rXxWw0SItP9QjxpRMpkju66h0KumF7TPCtvHdOKS5lY=
 github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a h1:d+JxH8hvIYx5ThT5BkoqspNncVHNISxlFKqxAmzc1us=
 github.com/alanshaw/libracha v0.0.0-20251219144841-bc96c56a118a/go.mod h1:sLkbaUOPPIG07WlEMQ6IR8fvTu1J7zN5WIrFBC1RPQk=
-github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507 h1:gsmj7fsWWGQhrRkuuSYHs/9kVwsbYpejU+/OVTqHj8U=
-github.com/alanshaw/ucantone v0.0.0-20251219114744-e8693bdfe507/go.mod h1:OkhxH4U/b9qvbp/07s1Ra5g37p0IsxVdkLOzkTrERoM=
+github.com/alanshaw/ucantone v0.0.0-20260107142715-f3e55efdef36 h1:wQmhpDtUL+oVuHMtpb2NIPBeorT7KAImWXy7lgkxUBg=
+github.com/alanshaw/ucantone v0.0.0-20260107142715-f3e55efdef36/go.mod h1:BXcVQan1Acxuzvt7TEQip0+Pw1LEjZDqH+zgC7kXHW0=
 github.com/algorand/go-algorand-sdk v1.24.0 h1:mi8vqjXMC5nU87snq4vxHi+NgPR0thtZHRLA16FKZMM=
 github.com/algorand/go-algorand-sdk v1.24.0/go.mod h1:WEeJcctOHMzDFTgVJ6GT8BLUo9DbFTT47S+Kzx7ffXQ=
 github.com/algorand/go-codec v1.1.8/go.mod h1:XhzVs6VVyWMLu6cApb9/192gBjGRVGm5cX5j203Heg4=
